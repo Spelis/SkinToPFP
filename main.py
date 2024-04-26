@@ -5,6 +5,7 @@ import argparse
 import requests
 import webbrowser
 from os import remove
+from imgcat import imgcat
 
 parser = argparse.ArgumentParser(
                     prog='SkinToPFP',
@@ -17,12 +18,13 @@ parser.add_argument('-z', '--size', help='Resize the output image by this much. 
 parser.add_argument('-a', '--ambient_bg', help='Sets the background to a Youtube-like ambient color', action='store_true')
 parser.add_argument('-b', '--bg', help='Sets the background color to a RGB value. triple values 0-255 split with ":"')
 parser.add_argument('-l', '--local', help='Use a local file as skin', action='store_true')
+parser.add_argument('-nm', '--namemc', help="Opens NameMC Page for user if -l flag isn't passed.", action='store_true')
 
 
 args = parser.parse_args()
 
-save = args.save_location + args.user + ".png"
-save2 = args.save_location + args.user + "_pfp.png"
+save = args.save_location + args.user + (".png" if not args.local else "")
+save2 = args.save_location + (args.user if not args.local else str(args.user).rstrip(".png")) + "_pfp.png"
 
 
 def dl_from_web(user):
@@ -145,3 +147,5 @@ if not args.skin:  # if user doesn't want a profile picture, respect that.
     mk_pfp()
 if args.local is False or args.skin:
     remove(save)
+if args.namemc and not args.local:
+    open_namemc(args.user)
